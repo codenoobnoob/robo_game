@@ -1,7 +1,8 @@
-from gamemodules import robotest
+from pygame import draw
+from gamemodules import dino_test
 import pygame
 import math
-
+import time
 # objective is to collect all coins and get to the finnish "door". Avoid collition with monsters and falling of the obsticles. Default map is very simple. Arrow keys to move and space to kick(Kick action doesn't do anything to the monsters at the moment, you still die if you collide).
 
 
@@ -23,7 +24,7 @@ rect 2000 150 200 10
 rect 2300 250 200 10
 rect 2870 50 20 10
 rect 3100 10 600 10
-line 200 200 400 60
+line 0 200 200 60
 money kolikko 300 150
 money kolikko 350 150
 money kolikko 400 150
@@ -152,7 +153,9 @@ class Finnish(Obsticles):
 class Robo:
     def __init__(self, image: str, position: list):
 
-        self.image = pygame.image.load(f"images/{image}.png")
+        # self.image = pygame.image.load(f"images/{image}.png")
+        self.image = pygame.Surface((60, 80))
+        self.rect = self.image.get_rect()
         self.x_min = position[0]+5
         self.x_max = position[0]+self.image.get_width()-5
         self.y_max = position[1] + self.image.get_height()
@@ -247,8 +250,12 @@ class Roborunner:
         self.x = 0
         self.gameover = False
         self.gamewin = False
-        self.robo_group = robotest.robo_init(
-            14, 40, 7, 2, 27, (self.robo.x_min-60, self.height-self.robo.y_max+self.robo.image.get_height()-180))
+        self.dino = dino_test.Dino(
+            (self.robo.x_min, self.height-self.robo.y_max), "images/dino")
+        self.player_group = pygame.sprite.Group()
+        self.dino.add(self.player_group)
+        # self.robo_group = robotest.robo_init(
+        #     14, 40, 7, 2, 27, (self.robo.x_min-60, self.height-self.robo.y_max+self.robo.image.get_height()-180))
         # self.robo_group = robo.robo_init(
         #     15, 14, 30, 1, 10, (self.robo.x_min-60, self.height-self.robo.y_max+self.robo.image.get_height()-180))
 
@@ -287,6 +294,7 @@ class Roborunner:
     def play(self):
         self.init_game()
         while True:
+            self.check_time()
             if self.game_over() or self.win_game():
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -297,6 +305,16 @@ class Roborunner:
             else:
                 self.handle_event()
             self.draw_game()
+
+    # Not working
+
+    def check_time(self):
+        # print(self.clock.get_fps)
+        looptime = self.font.render(
+            str(self.clock.get_rawtime), True, (174, 0, 0))
+        self.display.blit(looptime, (self.width/3, 10))
+        fps = self.font.render(str(self.clock.get_fps), True, (174, 0, 0))
+        self.display.blit(fps, (self.width/3, 10))
 
     def handle_event(self):
         for event in pygame.event.get():
@@ -444,10 +462,12 @@ class Roborunner:
 
         # Testing
         angle = self.calc_angle()
-        self.robo_group.update(self.x,
-                               self.robo.x_min+20, self.height - self.robo.y_max, angle, self.robo.rising, self.robo.falling, self.robo.jump_height, self.robo.y_max-self.ceiling, self.y_dir)
-        self.robo_group.draw(self.display)
-
+        # self.robo_group.update(self.x,
+        #                        self.robo.x_min+20, self.height - self.robo.y_max, angle, self.robo.rising, self.robo.falling, self.robo.jump_height, self.robo.y_max-self.ceiling, self.y_dir)
+        # self.robo_group.draw(self.display)
+        self.dino.update(self.x, self.robo.x_min-20, self.height - (self.robo.y_max+20), angle, self.robo.rising,
+                         self.robo.falling, self.robo.jump_height, self.robo.y_max-self.ceiling, self.y_dir)
+        self.player_group.draw(self.display)
         # draw roboninja
         # self.display.blit(pygame.transform.rotate(
         #     self.robo.image, self.robo.angle), (self.robo.x_min, self.height-self.robo.y_max))
