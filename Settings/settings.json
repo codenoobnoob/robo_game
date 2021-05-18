@@ -1,0 +1,9 @@
+{
+    "Background": {
+        "MOVE_SPEED": 0.5 
+    },
+    "gameplay": {
+        "SPEED": 1,
+        "TEST": TRUE
+    }
+}

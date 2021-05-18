@@ -1,38 +1,45 @@
-import pygame
-from pygame import transform
+from pygame import Vector2, sprite, transform, Surface, image
+from pygame.math import Vector2
+
+# working class for animation objects. Maybe implement a (step setter) to set the speed of the animation. (or break apart into smaller bits, not very generic at the moment)
 
 
-class Dino(pygame.sprite.Sprite):
-    def __init__(self, position: tuple, path):
-        pygame.sprite.Sprite.__init__(self)
+class Dino(sprite.Sprite):
+    def __init__(self, position: tuple, animation_name: str, animation_images: dict, size: tuple):
+        sprite.Sprite.__init__(self)
         self.gap = 50
         self.forward = True
-        self.x = position[0]
-        self.y = position[1]
+        self.size = size
+        self.vec = Vector2()
+        self.vec.update((position[0], position[1]))
+        # self.x = position[0]
+        # self.y = position[1]
         self.travel = 0
-        self.animation_images = {}
+        self.image_count = len(animation_images)
+        self.animation_images = animation_images
+        self.animation_name = animation_name
         self.animation_frame = 0
-        self.image = pygame.Surface((
-            100, 100))
-        self.load_animation(path)
+        self.image = Surface(size)
         # self.image.fill((255, 255, 255))
         # self.image.set_colorkey((255, 255, 255))
         self.rect = self.image.get_rect()
-        self.rect.topleft = (self.x, self.y)
-        self.update_image(1)
+        self.rect.topleft = self.vec
+        self.update_image()
 
-    def update_image(self, x_dir):
+    def update_image(self):
         self.image.fill((255, 255, 255))
         self.image.set_colorkey((255, 255, 255))
         if self.forward:
             self.image.blit(transform.flip(transform.scale(
-                            self.animation_images[f"{self.animation_name}_{self.animation_frame}"], (100, 100)), True, False), (0, 0))
+                            self.animation_images[f"{self.animation_name}_{self.animation_frame}"], self.size), True, False), (0, 0))
 
         else:
             self.image.blit(transform.scale(
-                self.animation_images[f"{self.animation_name}_{self.animation_frame}"], (100, 100)), (0, 0))
+                self.animation_images[f"{self.animation_name}_{self.animation_frame}"], self.size), (0, 0))
 
-    def update(self, x_dir, x: float, y: float, angle: float, rising: bool, falling: bool, jump_height: float, ceiling: float, y_dir: int):
+    def update(self, vector: object):
+        x_dir = vector.x
+        y_dir = vector.y
         if x_dir < 0:
             self.forward = False
         if x_dir > 0:
@@ -45,20 +52,9 @@ class Dino(pygame.sprite.Sprite):
             if self.travel <= -10:
                 self.animation_frame += 1
                 self.travel = 0
-            if self.animation_frame == 11:
+            if self.animation_frame == self.image_count:
                 self.animation_frame = 0
-        # if self.animation_frame == -1:
-        #     self.animation_frame = 10
 
-        self.x = x
-        self.y = y
-        self.rect.topleft = (x, y)
-        self.update_image(x_dir)
-
-    def load_animation(self, path):
-        self.animation_name = path.split("/")[-1]
-        for n in range(11):
-            image_id = f"{self.animation_name}_{str(n)}"
-            image_path = f"{path}/{image_id}.png"
-            animation_image = pygame.image.load(image_path).convert_alpha()
-            self.animation_images[image_id] = animation_image.copy()
+        self.vec += vector
+        self.rect.topleft = self.vec
+        self.update_image()

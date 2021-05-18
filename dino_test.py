@@ -3,7 +3,7 @@ from gamemodules import dino_test
 import pygame
 import math
 import time
-# objective is to collect all coins and get to the finnish "door". Avoid collition with monsters and falling of the obsticles. Default map is very simple. Arrow keys to move and space to kick(Kick action doesn't do anything to the monsters at the moment, you still die if you collide).
+# Just a test file to test animation objekts
 
 
 # Default map = default: Maps can be created using the following:

@@ -2,6 +2,8 @@ from gamemodules import robo
 import pygame
 import math
 
+# first working copy...
+
 # objective is to collect all coins and get to the finnish "door". Avoid collition with monsters and falling of the obsticles. Default map is very simple. Arrow keys to move and space to kick(Kick action doesn't do anything to the monsters at the moment, you still die if you collide).
 
 
@@ -423,10 +425,6 @@ class Roborunner:
                 if i.type == "finnish":
                     self.display.blit(
                         i.image, (i.x_min, self.height - i.y_max))
-
-        # Testing
-        robo.draw(self.display, self.x, 0, 1,
-                  (self.robo.x_min-80, self.robo.y_max-10))
 
         # draw roboninja
         self.display.blit(pygame.transform.rotate(
