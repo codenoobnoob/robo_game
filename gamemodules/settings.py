@@ -1,0 +1,16 @@
+# general settings
+WIDTH = 800
+HEIGHT = 600
+MAGNIFICATION = 1.5
+WORLDSIZE_X = 6000
+WORLDSIZE_Y = 6000
+
+# camera settings
+DELAY = 3
+ADVANCE = 50
+
+# player settings
+SPEED = 5
+ACCELERATION = 0.2
+GRAVITY = 0.8
+FRICTION = 0.8

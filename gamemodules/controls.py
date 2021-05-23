@@ -1,18 +1,18 @@
 import pygame
-import pygame.math
+from pygame.math import Vector2
 
 # Next steps implement movement ease or somehow use the camera class to ease the movement (controls class). Also develop the separate movement classes.
 
 
 class Controls:
-    def __init__(self, max_speed: int, movement_ease: float):
+    def __init__(self, max_speed: int, movement_ease=lambda x: x):
         """max_speed: int --> max speed of x-axis movement
         self.vec is the vector that's created by the key presses
         and can be used to move objects. Also has self.(right, left, up, down, space, W, A, S, D, ctrl) that store a boolean to denote if the key is pressed.
         """
         self.ease = movement_ease
         self.__speed = max_speed
-        self.vec = pygame.math.Vector2()
+        self.vec = Vector2()
         self.vec.update((1, 1))
         self.right = False
         self.left = False
@@ -40,7 +40,7 @@ class Controls:
             elif key == 1073741905 or key == 115:
                 y = 1
 
-        self.vec.update(x*self.__speed, y*self.__speed)
+        self.vec.update(x, y)
 
     def set_speed(self, new_speed: int):
         self.__speed = new_speed
@@ -97,12 +97,12 @@ class Follow_player(Object_movement):
 
 
 class Ease_x(Object_movement):
-    def __init__(self, speed: int, movement_ease: float, right=True, left=True):
+    def __init__(self, speed: int, movement_ease: float):
         super().__init__(speed, movement_ease)
 
 
 class Ease_y(Object_movement):
-    def __init__(self, speed: int, movement_ease: float, up=True, down=True):
+    def __init__(self, speed: int, movement_ease: float):
         super().__init__(speed, movement_ease)
 
 
